@@ -51,8 +51,6 @@ markdown_extensions:
   - admonition
   - pymdownx.details
     
-      
-    copyright:
-      2024<a href="https://github.com/EAEOMICS" target="_blank" rel="noopener">EAOMICS based on the Hybrid genome assembly page of Melbourne Bioinformatics</a>
+copyright: Copyright &copy; 2024 EAOMICS based on the Hybrid genome assembly page of Melbourne Bioinformatics
       
       
