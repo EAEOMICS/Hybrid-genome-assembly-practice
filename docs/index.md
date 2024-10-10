@@ -151,7 +151,7 @@ busco -i ../../data/VP_reference_genome.fasta -l vibrionales -o busco_reference 
 ```
 After the program has run, look at the ‘short summary’ output. It may look something like this:
 
-<img src="assets/busco_reference.png">
+<img src="assets/Busco_reference.png">
 
 It seems that BUSCO could find almost all expected genes in the reference genome assembly.
 By looking at the results, we see that we have 1445 / 1445 Complete BUSCOs, one being complete and duplicates.
@@ -187,4 +187,4 @@ cd assembly_qc
 busco -i ../assemblies/nanopore_draft/assembly.fasta -l vibrionales -o busco_draft_nanopore --augusutus --mode genome
 ```
 
-<img src="assets/busco_draft_nanopore.png">
+<img src="assets/Busco_draft_nanopore.png">
