@@ -1,4 +1,4 @@
-# Welcome to MkDocs
+# Hybrid-genome-assembly-practice
 
 For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
@@ -191,5 +191,5 @@ busco -i ../assemblies/nanopore_draft/assembly.fasta -l vibrionales -o busco_dra
 
 <details>
 <summary>Question 2(click to reveal)</summary>
-As you can see we do not get the same output as the reference, How do you think that this could have happened?
+As you can see we do not get the same output as the reference, Why do you think is this happening?
 </details>
