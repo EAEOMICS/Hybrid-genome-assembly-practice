@@ -78,23 +78,68 @@ What do you think about them? Do you think they have enough quality? Let's discu
 
 
 **Run Fastp**
+It seams that our samples have some unwanted short reads and the quality of some bases is not as good as it could be.
+There are plenty of programs such as `trimmomatic` or `cutadapt` that can be used to filter our Illumina reads, but for making this exercise a bit simplier
+today we will use `Fastp`. we will use `-l` to set the minimum length of the filtered reads and `-q` to set the minimum phred quality
+```{Bash}
+cd ..
+mkdir fastp
+cd fastp
+fastp -i ../../data/SRR10022816_1.fastq -I ../../data/SRR10022816_2.fastq \
+-o ./SRR10022816_trimmed_1.fastq -O ./SRR10022816_trimmed_2.fastq -l 240 -q 30
+```
+
+We have generated two **new fastqs** called `SRR10022816_trimmed_1.fastq` and `SRR10022816_trimmed_2.fastq`. :warning: From now on when we say Illumina reads, these are the ones that we are talking about.
+Now is time to see how this new fastqs differ from the others
+
+```{Bash}
+cd ..
+mkdir illumina_trimmed
+cd qc/illumina_trimmed
+
+fastqc ../fastp/SRR10022816_trimmed_1.fastq ../fastp/SRR10022816_trimmed_2.fastq -o ./
+```
+
+:bangbang: Look at the difference in number of reads between the raw and the trimmed fastqs.
 
 
 **Run NanoPlot**
-* Find MultiQC in the tools panel. It is listed as '**NanoPlot** Plotting suite for Oxford Nanopore sequencing data and alignments'
-* Parameters:
-    * ***Type of the file(s) to work on***
-        * ***files*** nanopore_reads.fastq
-* Leave all else default and execute the program. 
 
-<br>
+As you know the reads of Nanopore are much longer than the Illumina ones, although in some cases (such as 16S experiments) we can use FastQC to look at them, it is better to use
+a tool specifically designed for Nanopore, in this case we are going to use `Nanoplot`
 
-NanoPlot produces 5 outputs, but we are only interested in the 'HTML report' output. View this file by clicking the eye icon on this history item.
+```{Bash}
+cd ..
+mkdir nanopore_raw
+cd nanopore_raw
+NanoPlot -t 4 --fastq ../../data/SRR10022815.fastq 
+```
 
-The NanoPlot HTML report includes a table, followed by a number of plots. The table provides a summary of the read set. The main statistics we will look at are ***Median read length***, ***Median read quality***, and ***Number of reads***. 
+Our median read length (7044 bp) is quite good for Nanopore data,although some reads can be even longer, but the median quality is not that good (10.3), not so much time ago we would say that this quality is quite nice but the last generation of Nanopore flowcell produce much better reads some of them at the same level as Illumina, but for this exercise we will continue with what we have
 
-<br>
+## Section 2: Nanopore draft assembly
 
-<img src="media/nanoplot_table.PNG" width="400">
+### A baseline for "high-quality" assemblies
 
-<br>
+To begin, we will identify what a high-quality assembly looks like.
+
+When running assembly tools, we want to check the quality of assemblies we produce. It is paramount that genome assemblies are high-quality for them to be useful.
+
+To get a baseline for what is considered a "high-quality" assembly, we will first run a common assembly QC tool - `Busco` - on a published genome similar to the organism we are working with today.
+
+In the moodle you should see a `VP_reference_genome.fasta` item. This is the published genome we will compare against.
+
+**Busco**
+
+`Busco` analysis uses the presence, absence, or fragmentation of key genes in an assembly to determine its quality.
+
+`Busco` genes are specifically selected for each taxonomic clade, and represent a group of genes that each organism in the clade is expected to possess. At higher clades, 'housekeeping genes' are the only members, while at more refined taxa such as order or family, lineage-specific genes can also be used.
+
+We expect the reference genome to have all of these genes. When running `Busco`, we expect it to find most (if not all) of these in the assembly.
+
+Let's create a new directory called `assembly_qc`. We want to create this directory outside from the `qc` directory we have been working on.
+
+> [!IMPORTANT]
+> **remember the directory structure we are using**
+> 
+>hybrid_assembly[data(fastqs), qc(illumina_raw, nanopore_raw, illumina_trimed, fastp), assembly_qc]
