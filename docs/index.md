@@ -67,8 +67,8 @@ FastQC produces two outputs - 'RawData', and 'Webpage'. Typically, the webpage i
 
 Let's see how the QC went on the Illumina Reads
 <br>
-<img src="assets/illuminaR1_raw">
-<img src="assets/illuminaR2_raw">
+<img src="assets/illuminaR1_raw.png">
+<img src="assets/illuminaR2_raw.png">
 <br>
 
 <details>
