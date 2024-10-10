@@ -56,7 +56,7 @@ Depending on these summaries, we may choose to perform a QC step to remove any p
 **Run FastQC**
 
 As said before, we will use `FastQC` to see the quality of our **Illumina** reads. Once again, remember **Organization is key**, therefore we are going to create a new directory where we are going to save all our Quality Control outputs
-```{Bash}
+```shell
 mkdir -p qc/illumina_raw
 cd qc/illumina_raw
 
@@ -81,7 +81,7 @@ What do you think about them? Do you think they have enough quality? Let's discu
 It seams that our samples have some unwanted short reads and the quality of some bases is not as good as it could be.
 There are plenty of programs such as `trimmomatic` or `cutadapt` that can be used to filter our Illumina reads, but for making this exercise a bit simplier
 today we will use `Fastp`. we will use `-l` to set the minimum length of the filtered reads and `-q` to set the minimum phred quality
-```{Bash}
+```shell
 cd ..
 mkdir fastp
 cd fastp
@@ -92,7 +92,7 @@ fastp -i ../../data/SRR10022816_1.fastq -I ../../data/SRR10022816_2.fastq \
 We have generated two **new fastqs** called `SRR10022816_trimmed_1.fastq` and `SRR10022816_trimmed_2.fastq`. :warning: From now on when we say Illumina reads, these are the ones that we are talking about.
 Now is time to see how this new fastqs differ from the others
 
-```{Bash}
+```shell
 cd ..
 mkdir illumina_trimmed
 cd qc/illumina_trimmed
@@ -108,7 +108,7 @@ fastqc ../fastp/SRR10022816_trimmed_1.fastq ../fastp/SRR10022816_trimmed_2.fastq
 As you know the reads of Nanopore are much longer than the Illumina ones, although in some cases (such as 16S experiments) we can use FastQC to look at them, it is better to use
 a tool specifically designed for Nanopore, in this case we are going to use `Nanoplot`
 
-```{Bash}
+```shell
 cd ..
 mkdir nanopore_raw
 cd nanopore_raw
@@ -143,3 +143,48 @@ Let's create a new directory called `assembly_qc`. We want to create this direct
 > **remember the directory structure we are using**
 > 
 >hybrid_assembly[data(fastqs), qc(illumina_raw, nanopore_raw, illumina_trimed, fastp), assembly_qc]
+
+```shell
+mkdir -p assembly_qc
+cd assembly_qc
+busco -i ../../data/VP_reference_genome.fasta -l vibrionales -o busco_reference --augustus --mode genome 
+```
+After the program has run, look at the ‘short summary’ output. It may look something like this:
+
+<img src="assets/busco_reference.png">
+
+It seems that BUSCO could find almost all expected genes in the reference genome assembly.
+By looking at the results, we see that we have 1445 / 1445 Complete BUSCOs, one being complete and duplicates.
+
+This will form the baseline for the BUSCO QC results expected of a high-quality genome assembly.
+
+From here, we will use our input DNA sequence data to assemble the genome of the sequenced organism, and will compare the QC results to that of the published `VP_reference_genome.fasta` assembly.
+
+### Draft assembly with Flye + Nanopore reads
+
+Our first assembly will use the long-read data to create a draft genome, then the short-read data to "polish" (improve) the draft into a better assembly.
+
+We will start by using a long-read assembly tool called "Flye" to create an assembly using the Nanopore long-read data.
+
+Once again we need to create an specific directory for that, let's move again to the general `hibrid_assembly` directory
+we will create a directory called `assemblies` where we will compute all the assemblies in this practice
+
+```shell
+mkdir -p assemblies/nanopore_draft
+cd assemblies/nanopore_draft
+flye --nano_hq ../../data/SRR10022815.fastq -o ./
+```
+
+this are the results from our run:
+
+<img src="assets/nanopore_draft.png">
+
+with that info we already can make an idea of how good is our draft assembly, but let's compare this assembly with our reference genome. For that we are going to use `Busco` again and `Quast
+
+```shell
+cd assembly_qc
+
+busco -i ../assemblies/nanopore_draft/assembly.fasta -l vibrionales -o busco_draft_nanopore --augusutus --mode genome
+```
+
+<img src="assets/busco_draft_nanopore.png">
