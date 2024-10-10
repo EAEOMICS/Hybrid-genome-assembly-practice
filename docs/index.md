@@ -139,7 +139,7 @@ We expect the reference genome to have all of these genes. When running `Busco`,
 
 Let's create a new directory called `assembly_qc`. We want to create this directory outside from the `qc` directory we have been working on.
 
-> [!IMPORTANT]
+
 > **remember the directory structure we are using**
 > 
 >hybrid_assembly[data(fastqs), qc(illumina_raw, nanopore_raw, illumina_trimed, fastp), assembly_qc]
