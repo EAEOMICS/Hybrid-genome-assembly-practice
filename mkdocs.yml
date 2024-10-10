@@ -1,7 +1,7 @@
-site_name: MkDocs YouTube Tutorial
+site_name: Hybrid genome assembly practice
 theme:
   name: material
-  logo: assets/logo.png
+  logo: docs/assets/logo.png
   features:
     - navigation.tabs
     - navigation.sections
