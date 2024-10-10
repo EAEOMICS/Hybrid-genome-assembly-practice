@@ -188,3 +188,8 @@ busco -i ../assemblies/nanopore_draft/assembly.fasta -l vibrionales -o busco_dra
 ```
 
 <img src="assets/Busco_draft_nanopore.png">
+
+<details>
+<summary>Question 2(click to reveal)</summary>
+As you can see we do not get the same output as the reference, How do you think that this could have happened?
+</details>
