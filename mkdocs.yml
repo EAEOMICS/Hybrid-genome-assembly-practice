@@ -1,6 +1,7 @@
 site_name: MkDocs YouTube Tutorial
 theme:
   name: material
+  logo: assets/logo.png
   features:
     - navigation.tabs
     - navigation.sections
