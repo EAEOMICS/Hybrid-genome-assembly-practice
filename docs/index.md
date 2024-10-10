@@ -179,7 +179,7 @@ this are the results from our run:
 
 <img src="assets/nanopore_draft.png">
 
-with that info we already can make an idea of how good is our draft assembly, but let's compare this assembly with our reference genome. For that we are going to use `Busco` again and `Quast
+with that info we already can get an idea of how good is our draft assembly, but let's compare this assembly with our reference genome. For that we are going to use `Busco` again and `Quast
 
 ```shell
 cd assembly_qc
