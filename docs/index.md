@@ -298,3 +298,22 @@ quast ../../assemblies/pilon_assembly/pilon_assembly.fasta -r ../../data/VP_refe
 What do you think about the results? Do you see any improvements?
 </details>
 
+## Section 3: Hybrid assembly - Unicycler
+
+In this section, we will use a purpose-built tool called `Unicycler` to perform hybrid assembly.
+
+`Unicycler` uses our `Nanopore` and `Illumina` read sets together as input, and returns an assembly. Once we have created the assembly, 
+we will assess its quality using `Quast` and `Busco` and compare with our previous polished assembly.
+
+`Unicycler` performs assembly in the opposite manner to our approach. `Illumina` reads are used to create an assembly graph, then `Nanopore` reads 
+are used to disentangle problems in the graph. The Nanopore reads serve to bridge Illumina contigs, and to reveal how the contigs are arranged 
+sequentially in the genome. 
+
+**Run Unicycler**
+
+```bash
+# return to the assemblies directory
+
+mkdir unicycler
+unicycler -1 ../qc/fastp/SRR10022816_trimmed_1.fastq -2 ../qc/fastp/SRR10022816_trimmed_2.fastq -l ../data/SRR10022815.fastq -o unicycler -t 6
+```
