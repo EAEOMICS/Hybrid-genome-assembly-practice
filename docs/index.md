@@ -16,7 +16,7 @@ Long reads can be used together with short reads to produce a high-quality assem
 
 **Data:** Nanopore reads, Illlumina reads, bacterial organism (_Vibrio parahaemolyticus_) reference genome
 
-**Tools:** `Flye`, `Pilon`, `Unicycler`, `Quast`, `Busco`, `BWA`, `Samtools`,`FastQC`, `Fastp`,`nanoplot`,`chopper`,`porechop`,`cutadapt`,`trimmomatic`
+**Tools:** `Flye`, `Pilon`, `Unicycler`, `Quast`, `Busco`, `BWA`, `Samtools`,`FastQC`, `Fastp`,`nanoplot`
 
 ## Section 1: Read inspection and QC
 
@@ -216,17 +216,17 @@ Now you should be looking at something like this:
 <img src="assets/quast_draft_nanopore.png">
 
 what are we looking for? Well there is plenty of information here but you should take a closer look to:
-- Genome fraction
-- Number of contigs
-- Number of misassemblies
-- Number of mismatches per 100Kbp
-- Number of indels per 100Kbp
-- Total length
-- Largest contig
-- L50
-- N50
-- LGA50
-- NGA50
+* Genome fraction
+* Number of contigs
+* Number of misassemblies
+* Number of mismatches per 100Kbp
+* Number of indels per 100Kbp
+* Total length
+* Largest contig
+* L50
+* N50
+* LGA50
+* NGA50
 
 <details>
 <summary>Question 3(click to reveal)</summary>
@@ -272,3 +272,21 @@ cd ..
 pilon --genome nanopore_draft/assembly.fasta --bam illumina_bam/illumina_sorted.bam --outdir pilon_assembly
 ```
 Once `Pilon` has ended we should find a unique Fasta file in the `pilon_assembly` directory
+
+**assembly QC**
+
+Now that we have run Pilon, thanks to the help of the illumina reads we should get a much better assembly than before.
+But we cannot call ourself scientist only with assumptions we need facts. Therefore, let's run Busco and Quast...yes, again :sleepy:
+
+```bash
+#return to the assembly_qc directory
+
+mkdir busco_pilon
+cd busco_pilon
+busco -i ../../assemblies/pilon_assembly/pilon_assembly.fasta -l vibrionales -o ./ --augustus --mode genome
+cd ../
+mkdir quast_pilon
+cd quast_pilon
+quast ../../assemblies/pilon_assembly/pilon_assembly.fasta -r ../../data/VP_reference_genome.fasta
+```
+
