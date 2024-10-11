@@ -56,7 +56,7 @@ Depending on these summaries, we may choose to perform a QC step to remove any p
 **Run FastQC**
 
 As said before, we will use `FastQC` to see the quality of our **Illumina** reads. Once again, remember **Organization is key**, therefore we are going to create a new directory where we are going to save all our Quality Control outputs
-```shell
+```bash
 mkdir -p qc/illumina_raw
 cd qc/illumina_raw
 
@@ -78,10 +78,11 @@ What do you think about them? Do you think they have enough quality? Let's discu
 
 
 **Run Fastp**
+
 It seams that our samples have some unwanted short reads and the quality of some bases is not as good as it could be.
 There are plenty of programs such as `trimmomatic` or `cutadapt` that can be used to filter our Illumina reads, but for making this exercise a bit simplier
 today we will use `Fastp`. we will use `-l` to set the minimum length of the filtered reads and `-q` to set the minimum phred quality
-```shell
+```bash
 cd ..
 mkdir fastp
 cd fastp
@@ -92,7 +93,7 @@ fastp -i ../../data/SRR10022816_1.fastq -I ../../data/SRR10022816_2.fastq \
 We have generated two **new fastqs** called `SRR10022816_trimmed_1.fastq` and `SRR10022816_trimmed_2.fastq`. :warning: From now on when we say Illumina reads, these are the ones that we are talking about.
 Now is time to see how this new fastqs differ from the others
 
-```shell
+```bash
 cd ..
 mkdir illumina_trimmed
 cd qc/illumina_trimmed
@@ -108,7 +109,7 @@ fastqc ../fastp/SRR10022816_trimmed_1.fastq ../fastp/SRR10022816_trimmed_2.fastq
 As you know the reads of Nanopore are much longer than the Illumina ones, although in some cases (such as 16S experiments) we can use FastQC to look at them, it is better to use
 a tool specifically designed for Nanopore, in this case we are going to use `Nanoplot`
 
-```shell
+```bash
 cd ..
 mkdir nanopore_raw
 cd nanopore_raw
@@ -144,7 +145,7 @@ Let's create a new directory called `assembly_qc`. We want to create this direct
 > 
 >hybrid_assembly[data(fastqs), qc(illumina_raw, nanopore_raw, illumina_trimed, fastp), assembly_qc]
 
-```shell
+```bash
 mkdir -p assembly_qc
 cd assembly_qc
 busco -i ../../data/VP_reference_genome.fasta -l vibrionales -o busco_reference --augustus --mode genome 
@@ -169,7 +170,7 @@ We will start by using a long-read assembly tool called "Flye" to create an asse
 Once again we need to create an specific directory for that, let's move again to the general `hibrid_assembly` directory
 we will create a directory called `assemblies` where we will compute all the assemblies in this practice
 
-```shell
+```bash
 mkdir -p assemblies/nanopore_draft
 cd assemblies/nanopore_draft
 flye --nano_hq ../../data/SRR10022815.fastq -o ./
@@ -181,7 +182,7 @@ this are the results from our run:
 
 with that info we already can get an idea of how good is our draft assembly, but let's compare this assembly with our reference genome. For that we are going to use `Busco` again and `Quast
 
-```shell
+```bash
 cd assembly_qc
 
 busco -i ../assemblies/nanopore_draft/assembly.fasta -l vibrionales -o busco_draft_nanopore --augusutus --mode genome
@@ -193,3 +194,81 @@ busco -i ../assemblies/nanopore_draft/assembly.fasta -l vibrionales -o busco_dra
 <summary>Question 2(click to reveal)</summary>
 As you can see we do not get the same output as the reference, Why do you think this is happening?
 </details>
+
+**Quast**
+
+Aside from `Busco`, we can use another method to perform assembly QC. In this case `Quast`allows us to compare two assemblies to determine their similarity.
+
+We know that Bacteria can differ a lot between individuals of the same species, nevertheless they should have the same number of chromosomes with similar lengths. What we are going to do know is compare both `VP_reference_genome.fasta`and this new draft assembly based on Nanopore.
+
+You know what is coming next, Yes! another directory :partying_face:
+
+```bash
+#go to the assembly_qc directory
+
+mkdir quast_draft_nanopore
+cd quast_draft_nanopore
+quast ../../assemblies/nanopore_draft/assembly.fasta -r ../../data/VP_reference_genome.fasta
+```
+The output of `Quast` should be a directory with a set of files, we are interested in the `report.html` file
+Now you should be looking at something like this:
+
+<img src="assets/quast_draft_nanopore.png">
+
+what are we looking for? Well there is plenty of information here but you should take a closer look to:
+- Genome fraction
+- Number of contigs
+- Number of misassemblies
+- Number of mismatches per 100Kbp
+- Number of indels per 100Kbp
+- Total length
+- Largest contig
+- L50
+- N50
+- LGA50
+- NGA50
+
+<details>
+<summary>Question 3(click to reveal)</summary>
+Which is the differnce between L50 and LGA50? What about N50 and NGA50?
+</details>
+
+<details>
+<summary>Question 4(click to reveal)</summary>
+What do you think about the nanopore assembly? is it good enough for you?
+</details>
+
+### Assembly polishing with Pilon
+
+We should be able improve our assembly with the Illumina reads available and correct some of these errors.
+
+This process involves two steps. We will first align the Illumina reads to our draft assembly, then supply the mapping information to Pilon, which will use this alignment information to error-correct our assembly.
+
+Illumina reads have much higher per-base accuracy than Nanopore reads. We will map the Illumina reads to our draft assembly using a short-read aligner called BWA-MEM. Then we can give Pilon this alignment file to polish our draft assembly.
+
+:bangbang: This is maybe one of the most complex steps that we are going to compute so be careful and don't get lost
+
+**Map Illumina reads to Nanopore draft assembly**
+
+To map the Illumina reads to the Nanopore assembly, first we need to index our assembly, for that we will be using `Bwa` and `Samtools`
+
+Indexing is an essential step in many bioinformatics applications, as it can greatly reduce the computational time and resources required for sequence alignment. It allows the alignment algorithm to quickly locate the query sequences in the reference genome, without having to search the entire genome for matches
+```bash
+#return to the assemblies directory
+
+mkdir nano_index
+mkdir illumina_bam
+bwa index -p nano_index/nano_index nanopore_draft/assembly.fasta
+cd illumina_bam
+bwa nano_index/nano_index ../qc/fastp/SRR10022816_trimmed_1.fastq ../qc/fastp/SRR10022816_trimmed_2.fastq | samtools sort -o illumina_sorted.bam
+samtools index -bc illumina_sorted.bam
+```
+
+We should get a BAM file as an output. This is tabular data recording information about how reads were aligned to the draft assembly.
+Now we can use that the `illumina_sorted.bam`to run `Pilon`.
+
+```bash
+cd ..
+pilon --genome nanopore_draft/assembly.fasta --bam illumina_bam/illumina_sorted.bam --outdir pilon_assembly
+```
+Once `Pilon` has ended we should find a unique Fasta file in the `pilon_assembly` directory
