@@ -116,7 +116,7 @@ cd nanopore_raw
 NanoPlot -t 4 --fastq ../../data/SRR10022815.fastq 
 ```
 
-Our median read length (7044 bp) is quite good for Nanopore data,although some reads can be even longer, but the median quality is not that good (10.3), not so much time ago we would say that this quality is quite nice but the last generation of Nanopore flowcell produce much better reads some of them at the same level as Illumina, but for this exercise we will continue with what we have
+Our median read length (7044 bp) is quite good for Nanopore data,although some reads can be even longer, but the median quality is not that good (9.6), not so much time ago we would say that this quality is quite nice but the last generation of Nanopore flowcell produce much better reads some of them at the same level as Illumina, but for this exercise we will continue with what we have
 
 ## Section 2: Nanopore draft assembly
 
@@ -260,7 +260,7 @@ mkdir nano_index
 mkdir illumina_bam
 bwa index -p nano_index/nano_index nanopore_draft/assembly.fasta
 cd illumina_bam
-bwa nano_index/nano_index ../qc/fastp/SRR10022816_trimmed_1.fastq ../qc/fastp/SRR10022816_trimmed_2.fastq | samtools sort -o illumina_sorted.bam
+bwa mem ../nano_index/nano_index ../../qc/fastp/SRR10022816_trimmed_1.fastq ../../qc/fastp/SRR10022816_trimmed_2.fastq | samtools sort -o illumina_sorted.bam
 samtools index -bc illumina_sorted.bam
 ```
 
@@ -269,7 +269,7 @@ Now we can use that the `illumina_sorted.bam`to run `Pilon`.
 
 ```bash
 cd ..
-pilon --genome nanopore_draft/assembly.fasta --bam illumina_bam/illumina_sorted.bam --outdir pilon_assembly
+pilon --genome nanopore_draft/assembly.fasta --bam illumina_bam/illumina_sorted.bam --outdir pilon_assembly  -Xmx12G
 ```
 Once `Pilon` has ended we should find a unique Fasta file in the `pilon_assembly` directory
 
@@ -282,11 +282,19 @@ But we cannot call ourself scientist only with assumptions we need facts. Theref
 #return to the assembly_qc directory
 
 mkdir busco_pilon
-cd busco_pilon
-busco -i ../../assemblies/pilon_assembly/pilon_assembly.fasta -l vibrionales -o ./ --augustus --mode genome
+busco -i ../assemblies/pilon_assembly/pilon_assembly.fasta -l vibrionales -o ./ --augustus --mode genome -f
 cd ../
 mkdir quast_pilon
 cd quast_pilon
 quast ../../assemblies/pilon_assembly/pilon_assembly.fasta -r ../../data/VP_reference_genome.fasta
 ```
+
+
+<img src="assets/Busco_pilon.png">
+<img src="assets/quast_pilon.png">
+
+<details>
+<summary>Question 5(click to reveal)</summary>
+What do you think about the results? Do you see any improvements?
+</details>
 
