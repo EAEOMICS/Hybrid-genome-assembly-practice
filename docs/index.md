@@ -16,7 +16,7 @@ Long reads can be used together with short reads to produce a high-quality assem
 
 **Data:** Nanopore reads, Illlumina reads, bacterial organism (_Vibrio parahaemolyticus_) reference genome
 
-**Tools:** `Flye`, `Pilon`, `Unicycler`, `Quast`, `Busco`, `BWA`, `Samtools`,`FastQC`, `Fastp`,`nanoplot`
+**Tools:** `Canu`, `Pilon`, `Unicycler`, `Quast`, `Busco`, `BWA`, `Samtools`,`FastQC`, `Trimmomatic`,`Cutadapt`,`Nanoplot`,`Filtlong`,`Porechop`
 
 ## Section 1: Read inspection and QC
 
@@ -31,7 +31,7 @@ Today we will use 4 pieces of data - **2 short read sets, 1 long read set, and a
 To get the data we will import our reads directly from the **NCBI SRA database** (Sequence Read Archive) which is the largest publicly available repository of high throughput sequencing data
 
 To download the data we will use the `fasterq-dump` tool from the SRA-toolkit which should be already installed in your conda environment.
-We know that the accession ID of our samples is **SRR10022815** and **SRR10022816**. 
+We know that the accession ID of our samples is **SRR10345480** and **SRR9042863**. 
 
 Before we start typing and running commands, is important to generate a new directory where all the files are going to be saved and organized.
 In our case we are going to create a directory called `hybrid_assembly` and a subdirectory called `data` in this subdirectory is where we are going to save our reads. **Do not move them at any moment**
@@ -60,7 +60,7 @@ As said before, we will use `FastQC` to see the quality of our **Illumina** read
 mkdir -p qc/illumina_raw
 cd qc/illumina_raw
 
-fastqc ../../data/SRR10022816_1.fastq ../../data/SRR10022816_2.fastq -o ./
+fastqc data/SRR*_1.fastq data/SRR*_2.fastq -o -o ./
 ```
 
 FastQC produces two outputs - 'RawData', and 'Webpage'. Typically, the webpage is for human viewing, and the RawData can be given to other programs, such as MultiQC.
@@ -77,29 +77,32 @@ What do you think about them? Do you think they have enough quality? Let's discu
 </details>
 
 
-**Run Fastp**
+**Clean Illumina reads**
 
 It seams that our samples have some unwanted short reads and the quality of some bases is not as good as it could be.
-There are plenty of programs such as `trimmomatic` or `cutadapt` that can be used to filter our Illumina reads, but for making this exercise a bit simplier
-today we will use `Fastp`. we will use `-l` to set the minimum length of the filtered reads and `-q` to set the minimum phred quality
+There are plenty of programs such as `trimmomatic` or `cutadapt` that can be used to filter our Illumina reads.First we will get rid of the Illumina adapters, in this case we use Nextera adapters, using `Cutadapt`.
+Then we will filter to the get the best possible reads by quality and length using `Trimmomatic` 
 ```bash
-cd ..
-mkdir fastp
-cd fastp
-fastp -i ../../data/SRR10022816_1.fastq -I ../../data/SRR10022816_2.fastq \
--o ./SRR10022816_trimmed_1.fastq -O ./SRR10022816_trimmed_2.fastq -l 240 -q 30
+#go to the main directory hybrid_assembly
+mkdir -p "qc/trimmomatic"
+
+cutadapt -a CTGTCTCTTATACACATCT -A AGATGTGTATAAGAGACAG -o qc/trimmomatic/out_illumina_1.fastq -p qc/trimmomatic/out_illumina_2.fastq data/SRR9042863_1.fastq data/SRR9042863_2.fastq
+trimmomatic PE -threads 4 -phred33 qc/trimmomatic/out_illumina_1.fastq qc/trimmomatic/out_illumina_2.fastq qc/trimmomatic/illumina_trimmed_1.fastq qc/trimmomatic/illumina_unpair_1.fastq qc/trimmomatic/illumina_trimmed_2.fastq qc/trimmomatic/illumina_unpair_2.fastq SLIDINGWINDOW:20:20 MINLEN:250
 ```
 
-We have generated two **new fastqs** called `SRR10022816_trimmed_1.fastq` and `SRR10022816_trimmed_2.fastq`. :warning: From now on when we say Illumina reads, these are the ones that we are talking about.
-Now is time to see how this new fastqs differ from the others
+We have generated two **new fastqs** called `illumina_trimmed_1.fastq` and `illumina_trimmed_1.fastq`. :warning: From now on when we say Illumina reads, these are the ones that we are talking about.
+Now is time to see how this new fastqs differ from the others.
 
 ```bash
-cd ..
-mkdir illumina_trimmed
-cd qc/illumina_trimmed
+mkdir "qc/illumina_trimmed"
 
-fastqc ../fastp/SRR10022816_trimmed_1.fastq ../fastp/SRR10022816_trimmed_2.fastq -o ./
+fastqc qc/trimmomatic/illumina_trimmed_1.fastq qc/trimmomatic/illumina_trimmed_2.fastq -o qc/illumina_trimmed
 ```
+
+<br>
+<img src="assets/illuminaR1_clean.png">
+<img src="assets/illuminaR2_clean.png">
+<br>
 
 :bangbang: Look at the difference in number of reads between the raw and the trimmed fastqs.
 
@@ -110,13 +113,34 @@ As you know the reads of Nanopore are much longer than the Illumina ones, althou
 a tool specifically designed for Nanopore, in this case we are going to use `Nanoplot`
 
 ```bash
-cd ..
-mkdir nanopore_raw
-cd nanopore_raw
-NanoPlot -t 4 --fastq ../../data/SRR10022815.fastq 
+#go to the main directory hybrid_assembly
+
+mkdir -p "qc/nanoplot_raw"
+cd qc/nanoplot_raw
+
+NanoPlot -t 4 --fastq ../../data/SRR10*.fastq
 ```
 
-Our median read length (7044 bp) is quite good for Nanopore data,although some reads can be even longer, but the median quality is not that good (9.6), not so much time ago we would say that this quality is quite nice but the last generation of Nanopore flowcell produce much better reads some of them at the same level as Illumina, but for this exercise we will continue with what we have
+Our median read length (7,365 pb) is quite good for Nanopore data,although some reads can be even longer, but the mean read quality is not that good (9.7), not so much time ago we would say that this quality is quite nice but the last generation of Nanopore flowcell produce much better reads some of them at the same level as Illumina.
+Now as we did before with the Illumina reads, let's clean the Nanopore reads.
+
+**Clean Nanopore reads**
+For cleaning our `Nanopore Reads` we will be using `Porechop`and `Filtlong` which are both of the most standarized softwares used for that. `Porechop`is the equivalent of
+`Cutadapt` in Illumina and `Filtlong` is the equivalent of `Trimmomatic`.
+Why do we need diferent programs to do that? Well, different technologies need diferent approaches, although some of the most popular softwares right now can support all `PacBio`, `Illumina`and `Nanopore`reads.
+
+```bash
+#go to the main directory hybrid_assembly
+
+mkdir -p "qc/nanoplot_trimmed"
+cd qc/nanoplot_trimmed
+
+porechop -i ../../data/SRR10*.fastq -o ./nanopore_adapter_clean.fastq
+filtlong --min_length 1000 --keep_percent 90 --mean_q_weight 9 nanopore_adapter_clean.fastq > nanopore_filtered.fastq
+```
+
+:bangbang: As we did with the Illumina reads, from now on when we say nanopore reads we will be refearing to `nanopore_filtered.fastq`
+
 
 ## Section 2: Nanopore draft assembly
 
@@ -155,37 +179,36 @@ After the program has run, look at the ‘short summary’ output. It may look s
 <img src="assets/Busco_reference.png">
 
 It seems that BUSCO could find almost all expected genes in the reference genome assembly.
-By looking at the results, we see that we have 1445 / 1445 Complete BUSCOs, one being complete and duplicates.
+By looking at the results, we see that we have 1443 / 1444 Complete BUSCOs, one being complete and duplicates, and anotherone missing.
 
 This will form the baseline for the BUSCO QC results expected of a high-quality genome assembly.
 
 From here, we will use our input DNA sequence data to assemble the genome of the sequenced organism, and will compare the QC results to that of the published `VP_reference_genome.fasta` assembly.
 
-### Draft assembly with Flye + Nanopore reads
+### Draft assembly with Canu + Nanopore reads
 
 Our first assembly will use the long-read data to create a draft genome, then the short-read data to "polish" (improve) the draft into a better assembly.
 
-We will start by using a long-read assembly tool called "Flye" to create an assembly using the Nanopore long-read data.
+We will start by using a long-read assembly tool called `Canu` to create an assembly using the Nanopore long-read data.
 
 Once again we need to create an specific directory for that, let's move again to the general `hibrid_assembly` directory
 we will create a directory called `assemblies` where we will compute all the assemblies in this practice
 
 ```bash
-mkdir -p assemblies/nanopore_draft
-cd assemblies/nanopore_draft
-flye --nano_hq ../../data/SRR10022815.fastq -o ./
+mkdir -p assemblies/canu
+canu -p canu -d assemblies/canu -nanopore qc/nanopore_trimmed/nanopore_filtered.fastq --genomeSize=5.1m
 ```
 
-this are the results from our run:
-
-<img src="assets/nanopore_draft.png">
-
-with that info we already can get an idea of how good is our draft assembly, but let's compare this assembly with our reference genome. For that we are going to use `Busco` again and `Quast
+We need to compare this assembly with our reference genome. For that we are going to use `Busco` again and `Quast
 
 ```bash
-cd assembly_qc
+#go to the main directory hybrid_assembly
 
-busco -i ../assemblies/nanopore_draft/assembly.fasta -l vibrionales -o busco_draft_nanopore --augusutus --mode genome
+mkdir -p assembly_qc/canu_nanopore
+cd assembly_qc/canu_nanopore
+
+busco -i ../../assemblies/canu/conu.contigs.fasta -l vibrionales -o busco --augustus --mode genome --cpu 4
+
 ```
 
 <img src="assets/Busco_draft_nanopore.png">
@@ -204,11 +227,9 @@ We know that Bacteria can differ a lot between individuals of the same species, 
 You know what is coming next, Yes! another directory :partying_face:
 
 ```bash
-#go to the assembly_qc directory
+#in the same assembly_qc/canu_nanopore directory as before
 
-mkdir quast_draft_nanopore
-cd quast_draft_nanopore
-quast ../../assemblies/nanopore_draft/assembly.fasta -r ../../data/VP_reference_genome.fasta
+quast ../../assemblies/canu/conu.contigs.fasta -r ../../data/VP_reference_genome.fasta -o quast
 ```
 The output of `Quast` should be a directory with a set of files, we are interested in the `report.html` file
 Now you should be looking at something like this:
@@ -254,39 +275,39 @@ To map the Illumina reads to the Nanopore assembly, first we need to index our a
 
 Indexing is an essential step in many bioinformatics applications, as it can greatly reduce the computational time and resources required for sequence alignment. It allows the alignment algorithm to quickly locate the query sequences in the reference genome, without having to search the entire genome for matches
 ```bash
-#return to the assemblies directory
+#go to the main directory hybrid_assembly
 
-mkdir nano_index
-mkdir illumina_bam
-bwa index -p nano_index/nano_index nanopore_draft/assembly.fasta
-cd illumina_bam
-bwa mem ../nano_index/nano_index ../../qc/fastp/SRR10022816_trimmed_1.fastq ../../qc/fastp/SRR10022816_trimmed_2.fastq | samtools sort -o illumina_sorted.bam
+mkdir -p assemblies/error_corrected_canu
+cd assemblies/error_corrected_canu
+mkdir index
+
+bwa index -p index/index ../canu/canu.contigs.fasta
+bwa mem index/index ../../qc/trimmomatic/illumina_trimmed_1.fastq  ../../qc/trimmomatic/illumina_trimmed_2.fastq | samtools sort -o illumina_sorted.bam
 samtools index -bc illumina_sorted.bam
+
 ```
 
 We should get a BAM file as an output. This is tabular data recording information about how reads were aligned to the draft assembly.
 Now we can use that the `illumina_sorted.bam`to run `Pilon`.
 
 ```bash
-cd ..
-pilon --genome nanopore_draft/assembly.fasta --bam illumina_bam/illumina_sorted.bam --outdir pilon_assembly  -Xmx12G
+pilon --genome ../canu/canu.contigs.fasta --bam illumina_sorted.bam --outdir pilon -Xmx12G
 ```
-Once `Pilon` has ended we should find a unique Fasta file in the `pilon_assembly` directory
+Once `Pilon` has ended we should find a unique **Fasta** file in the `pilon` directory
 
-**assembly QC**
+**Assembly QC**
 
 Now that we have run Pilon, thanks to the help of the illumina reads we should get a much better assembly than before.
 But we cannot call ourself scientist only with assumptions we need facts. Therefore, let's run Busco and Quast...yes, again :sleepy:
 
 ```bash
-#return to the assembly_qc directory
+#go to the main directory hybrid_assembly
 
-mkdir busco_pilon
-busco -i ../assemblies/pilon_assembly/pilon_assembly.fasta -l vibrionales -o ./ --augustus --mode genome -f
-cd ../
-mkdir quast_pilon
-cd quast_pilon
-quast ../../assemblies/pilon_assembly/pilon_assembly.fasta -r ../../data/VP_reference_genome.fasta
+mkdir -p assembly_qc/canu_nanopore_illumina
+cd assembly_qc/canu_nanopore_illumina
+
+busco -i ../../assemblies/error_corrected_canu/pilon/pilon.fasta -l vibrionales -o busco --augustus --mode genome --cpu 4
+quast ../../assemblies/error_corrected_canu/pilon/pilon.fasta -r ../../data/VP_reference_genome.fasta -o quast
 ```
 
 
@@ -312,8 +333,67 @@ sequentially in the genome.
 **Run Unicycler**
 
 ```bash
-# return to the assemblies directory
+#go to the main directory hybrid_assembly
 
-mkdir unicycler
-unicycler -1 ../qc/fastp/SRR10022816_trimmed_1.fastq -2 ../qc/fastp/SRR10022816_trimmed_2.fastq -l ../data/SRR10022815.fastq -o unicycler -t 6
+unicycler -1 qc/trimmomatic/illumina_trimmed_1.fastq -2 qc/trimmomatic/illumina_trimmed_2.fastq -l qc/nanopore_trimmed/nanopore_filtered.fastq -o assemblies/unicycler -t 4
 ```
+Once it has ended, if you go to the `assemblies/unicycler` directory, you should find the assembly file called `assembly.fasta`
+
+**Assembly QC**
+
+As we did with the `Canu` and `Pilon` assembly, we need to perform a Quality Control (QC) to our newly assembled genome.
+
+```bash
+#go to the main directory hybrid_assembly
+
+mkdir -p assembly_qc/unicycler_alone
+cd assembly_qc/unicycler_alone
+
+busco -i ../../assemblies/unicycler/assembly.fasta -l vibrionales -o busco --augustus --mode genome
+quast ../../assemblies/unicycler/assembly.fasta -r ../../data/VP_reference_genome.fasta -o quast
+```
+
+This are the results that we have obtained from Unicycler:
+
+<img src="assets/Busco_unicycler.png">
+<img src="assets/quast_unicycler.png">
+
+<details>
+<summary>Question 6(click to reveal)</summary>
+Which are the differnces between the pilon assembly and this one?
+</details>
+
+<details>
+<summary>Question 7(click to reveal)</summary>
+What do you think about the hybrid assembly? is it good enough for you?
+</details>
+
+## Section 4: Nobody expects this combo - Unicycler x Canu
+
+As you have read in the section 4 title, now we are going to do a Unicycler run based on our Canu run, and yes! this is possible.
+For that we are going to use the `Unicycler` option `--existing_long_read_assembly`. Remember when we mapped the illumina reads to the Canu draft assembly so`Pilon` could improve
+our the assembly? Well let's say this is something similar. This time Unicycler insted of building everything without a base, it will have de Canu_improved_assembly as baseline,
+and you will see that this time we will have a better result.
+
+```bash
+#go to the main directory hybrid_assembly
+
+mkdir -p assemblies/unicycler_canu
+cd assemblies/unicycler_canu
+
+unicycler -1 ../../qc/trimmomatic/illumina_trimmed_1.fastq -2 ../../qc/trimmomatic/illumina_trimmed_2.fastq -l ../../qc/nanopore_trimmed/nanopore_filtered.fastq -o ./ -t 4 --existing_long_read_assembly ../error_corrected_canu/pilon/pilon.fasta
+```
+
+I can't believe it! We are at the end, just compute the QC of that assembly and let's go back home :confounded:
+
+```bash
+#go to the main directory hybrid_assembly
+
+mkdir -p assembly_qc/unicycler_canu
+cd assembly_qc/unicycler_canu
+
+busco -i ../../assemblies/unicycler_canu/assembly.fasta -l vibrionales -o busco --augustus --mode genome --cpu 4
+quast ../../assemblies/unicycler_canu/assembly.fasta -r ../../data/VP_reference_genome.fasta -o quast
+```
+<img src="assets/Busco_unicyclerXcanu.png">
+<img src="assets/quast_unicyclerXcanu.png">
