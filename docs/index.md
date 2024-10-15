@@ -11,7 +11,7 @@ For doing that, you have at your disposal the MinION that Oxoford Nanopore send 
 because is what everybody does and there's plenty of pipeline there online. But your boss has read that some crazy scientist have started to do something called... Hybrid assembly. 
 So she tells you to try it...of course.
 
-<img src="assets/Designer.png">
+<img src="assets/Designer.png" width="500">
 
 
 ## Intro
