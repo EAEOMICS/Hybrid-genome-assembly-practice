@@ -5,10 +5,10 @@ For full documentation visit [MSc Bioinformatics moodle](http://bioinformatics-e
 ## Context
 
 Several patients have arrived to the hospital presenting a clear illness pattern. You know that recently a epidemic of Vibrio parahaemolyticus has started in your neighbour country.
-And you rapidly confirm the pathogen in the hosts. You know that this bacteria are known to rapidly develop resistance to antibiotics and some of them could be unuseful. Your boss also wants to know 
+And you rapidly confirm the pathogen in the hosts. You know that these bacteria are known to rapidly develop resistances to antibiotics and the treatment with some of them could be unuseful. Your boss also wants to know 
 if this cases are related or not with the epidemic, to generate a report and raise the alarm before is too late. Therefore you both arrive into a conclusion, you need to sequence that pathogen.
-For doing that, you have at your disposal the MinION that Oxoford Nanopore send you to test some months ago and the hospital's Illumina MiSeq. In this case you would for sure select the Illumina sequencer
-because is what everybody does and there's plenty of pipeline there online. But your boss has read that some crazy scientist have started to do something called... Hybrid assembly. 
+For doing that, you have at your disposal the MinION that Oxoford Nanopore send you some months ago to test it and the hospital's Illumina MiSeq. In this case you would for sure select the Illumina sequencer
+because is what everybody does and there's plenty of pipelines out there online. But your boss has read that some crazy scientist have started to do something called... Hybrid assembly. 
 So she tells you to try it...of course.
 
 <img src="assets/Designer.png" width="500">
