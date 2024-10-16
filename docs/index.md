@@ -98,7 +98,7 @@ There are plenty of programs such as `trimmomatic` or `cutadapt` that can be use
 Then we will filter to the get the best possible reads by quality and length using `Trimmomatic` 
 ```bash
 #go to the main directory hybrid_assembly
-mkdir -p "qc/trimmomatic"
+mkdir -p qc/trimmomatic
 
 cutadapt -a CTGTCTCTTATACACATCT -A AGATGTGTATAAGAGACAG -o qc/trimmomatic/out_illumina_1.fastq -p qc/trimmomatic/out_illumina_2.fastq data/SRR9042863_1.fastq data/SRR9042863_2.fastq
 trimmomatic PE -threads 4 -phred33 qc/trimmomatic/out_illumina_1.fastq qc/trimmomatic/out_illumina_2.fastq qc/trimmomatic/illumina_trimmed_1.fastq qc/trimmomatic/illumina_unpair_1.fastq qc/trimmomatic/illumina_trimmed_2.fastq qc/trimmomatic/illumina_unpair_2.fastq SLIDINGWINDOW:20:20 MINLEN:250
@@ -108,7 +108,7 @@ We have generated two **new fastqs** called `illumina_trimmed_1.fastq` and `illu
 Now is time to see how this new fastqs differ from the others.
 
 ```bash
-mkdir "qc/illumina_trimmed"
+mkdir -p qc/illumina_trimmed
 
 fastqc qc/trimmomatic/illumina_trimmed_1.fastq qc/trimmomatic/illumina_trimmed_2.fastq -o qc/illumina_trimmed
 ```
@@ -129,7 +129,7 @@ a tool specifically designed for Nanopore, in this case we are going to use `Nan
 ```bash
 #go to the main directory hybrid_assembly
 
-mkdir -p "qc/nanoplot_raw"
+mkdir -p qc/nanoplot_raw
 cd qc/nanoplot_raw
 
 NanoPlot -t 4 --fastq ../../data/SRR10*.fastq
@@ -147,7 +147,7 @@ Why do we need diferent programs to do that? Well, different technologies need d
 ```bash
 #go to the main directory hybrid_assembly
 
-mkdir -p "qc/nanoplot_trimmed"
+mkdir -p qc/nanoplot_trimmed
 cd qc/nanoplot_trimmed
 
 porechop -i ../../data/SRR10*.fastq -o ./nanopore_adapter_clean.fastq
