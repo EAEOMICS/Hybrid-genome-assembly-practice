@@ -137,6 +137,7 @@ Our median read length (7,365 pb) is quite good for Nanopore data,although some 
 Now as we did before with the Illumina reads, let's clean the Nanopore reads.
 
 **Clean Nanopore reads**
+
 For cleaning our `Nanopore Reads` we will be using `Porechop`and `Filtlong` which are both of the most standarized softwares used for that. `Porechop`is the equivalent of
 `Cutadapt` in Illumina and `Filtlong` is the equivalent of `Trimmomatic`.
 Why do we need diferent programs to do that? Well, different technologies need diferent approaches, although some of the most popular softwares right now can support all `PacBio`, `Illumina`and `Nanopore`reads.
@@ -154,6 +155,7 @@ filtlong --min_length 1000 --keep_percent 90 --mean_q_weight 9 nanopore_adapter_
 :bangbang: As we did with the Illumina reads, from now on when we say nanopore reads we will be refearing to `nanopore_filtered.fastq`
 
 **assign taxonomy of the pathogen**
+
 Now that we have our reads clean, it is always interesting to know what are we looking for. Doing an assembly without knowing what are we facing could be terrible. For example,
 imagine that you have assembled a genome with 6 close chormosomes, first of all, congratulations because that is not easy, but then you assign somehow the taxonomy of that organism
 and WOW is a Ficus! 🍃 👏👏, and then you realize that ficus is 2n=26 and something has gone wrong.
