@@ -36,7 +36,7 @@ Long reads can be used together with short reads to produce a high-quality assem
 
 In this section we will import and perform quality control (QC) on our data. 
 
-Today we will use 4 pieces of data - **2 short read sets, 1 long read set, and a reference genome** to compare our assembly with. 
+Today we will use 4 pieces of data - **2 short read sets, 1 long read set, and a reference genome** (to compare our assembly with). 
 
 <br>
 
@@ -60,7 +60,7 @@ fasterq-dump {accesion_ID} #repeat for both accesion IDs
 
 Often, it is prudent to first assess the quality of our read sets. For the short reads, we are concerned with base quality, sequence duplication, and presence of adapter sequences. For nanopore, we want to know about the length and quality distribution of reads, as these may both be highly variable. 
 
-`FastQC` creates summary reports for short read data. We will use this tool twice - once for each Illumina read set. We can then use a tool called `MultiQC` to combine these reports for easy viewing. 
+`FastQC` creates summary reports for short read data. If we were on a different situation with multiple samples and therefore, multiple fastqs, we could then use a tool called `MultiQC` to combine these reports for easy viewing. 
 
 For Nanopore data, `NanoPlot` is a great option. It creates plots which aim to summarise the length and quality distribution of long read sets. 
 
@@ -77,7 +77,7 @@ cd qc/illumina_raw
 fastqc data/SRR*_1.fastq data/SRR*_2.fastq -o -o ./
 ```
 
-FastQC produces two outputs - 'RawData', and 'Webpage'. Typically, the webpage is for human viewing, and the RawData can be given to other programs, such as MultiQC.
+FastQC produces two outputs - 'RawData', and 'html'. Typically, the html is for human viewing, and the RawData can be given to other programs, such as MultiQC.
 
 Let's see how the QC went on the Illumina Reads
 <br>
@@ -135,7 +135,7 @@ cd qc/nanoplot_raw
 NanoPlot -t 4 --fastq ../../data/SRR10*.fastq
 ```
 
-Our median read length (7,365 pb) is quite good for Nanopore data,although some reads can be even longer, but the mean read quality is not that good (9.7), not so much time ago we would say that this quality is quite nice but the last generation of Nanopore flowcell produce much better reads some of them at the same level as Illumina.
+Our median read length (7,365 pb) is quite good for Nanopore data,although some reads can be even longer, but the mean read quality is not that good (9.7), not so much time ago we would say that this quality is quite nice but the last generation of Nanopore flowcells produce much better reads, some of them at the same level as Illumina.
 Now as we did before with the Illumina reads, let's clean the Nanopore reads.
 
 **Clean Nanopore reads**
@@ -162,16 +162,16 @@ Now that we have our reads clean, it is always interesting to know what are we l
 imagine that you have assembled a genome with 6 closed chormosomes, first of all, congratulations because that is not easy, but then you assign somehow the taxonomy of that organism
 and... WOW is a Ficus! 🍃 👏👏, but you rapidly realize that Ficus is 2n=26 and something has gone wrong.
 
-There is pleanty of ways to assign taxonomy when doing an assembly, for example one of the most used programs to assign taxonomy to illumina reads is `Kraken2`, anoterone used with Nanopore reads
-could be `Emu`. But this programs require a powerfull machines, and let's be honest your gaming laptop MSI i9 with 12 Cores and 32 GB of Ram is not as powerful as the clusters that are typically used for this
+There is pleanty of ways to assign taxonomy when doing an assembly, for example one of the most used programs to assign taxonomy to illumina reads is `Kraken2`, anotherone used with Nanopore reads
+could be `Emu`. But this programs require powerfull machines, and let's be honest, your gaming laptop MSI i9 with 12 Cores and 32 GB of Ram is not as powerful as the clusters that are typically used for this
 jobs (we are talking about >40 Cores >100GB ram).
 
-To make things easy and rapid, we are going to de a trick, taking adventage of the length of the nanopore reads, we will select the first read of the `fastq` file, or the second, it doesn't matter whilst is long enough, and all should after the QC that we have done. and we are going to blast it!
+To make things easy and rapid, we are going to do a trick. Taking adventage of the length of the nanopore reads, we will select the first read of the `fastq` file, or the second, it doesn't matter whilst is long enough, and they all should be after the QC that we have done, then we are going to blast it!
 
 ```bash
 head qc/nanopore_trimmed/nanopore_filtered.fastq #you can also open the file and select the first read
 ```
-now that you have copied the first read, go to [Blastn](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome) and submit a job using the blastn option.
+Now that you have copied the first read, go to [Blastn](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome) and submit a job using the blastn option.
 Wow is a _Vibrio parahaemolyticus_, thanks god is not that ficus again!
 Go to the NCBI and download in `Fasta` format the [GCA_009649015.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_009649015.1/) genome in a unique file.
 Once you have download it, change the name of the fasta to `VP_reference_genome.fasta` and save it in the data directory.
