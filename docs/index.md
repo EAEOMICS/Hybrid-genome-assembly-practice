@@ -4,11 +4,9 @@ For full documentation visit [MSc Bioinformatics moodle](http://bioinformatics-e
 
 ## Context
 
-Several patients have arrived to the hospital presenting a clear illness pattern. You know that recently a epidemic of Vibrio parahaemolyticus has started in your neighbour country.
-And you rapidly confirm the pathogen in the hosts. You know that these bacteria are known to rapidly develop resistances to antibiotics and the treatment with some of them could be unuseful. Your boss also wants to know 
-if this cases are related or not with the epidemic, to generate a report and raise the alarm before is too late. Therefore you both arrive into a conclusion, you need to sequence that pathogen.
-For doing that, you have at your disposal the MinION that Oxoford Nanopore send you some months ago to test it and the hospital's Illumina MiSeq. In this case you would for sure select the Illumina sequencer
-because is what everybody does and there's plenty of pipelines out there online. But your boss has read that some crazy scientist have started to do something called... Hybrid assembly. 
+Several patients have arrived to the hospital presenting a clear illness pattern.You have tried to determine which pathogen is, but all your tests have failed, the time is running and you need a solution.
+You have shared this problems with your boss and, rapidly, you both arrive into a conclusion, sequence the pathogen. With that you will absolutly determine which pathogen has been causing all this troubles, and furthermore, you will know if it has any special characteristic such as antimicrobial resistance genes, pathogenic islands, etc.
+To sequence the pathogen you have at your disposal the MinION that Oxoford Nanopore send you some months ago to test it and the hospital's Illumina MiSeq. In this case you would for sure select the Illumina sequencer because is what everybody does and there's plenty of pipelines out there online. But your boss has read that some crazy scientist have started to do something called... Hybrid assembly. 
 So she tells you to try it...of course.
 
 <img src="assets/Designer.png" width="500">
@@ -26,7 +24,7 @@ In this tutorial we will perform ‘de novo assembly’. De novo assembly is the
 
 Long reads can be used together with short reads to produce a high-quality assembly. Nanopore long reads (commonly >40,000 bases) can fully span repeats, and reveal how all the genome fragments should be arranged. Therefore, while long reads will provide the general structure of the genome, short reads will provide that high base-level accuracy needed to close a genome.
 
-**Data:** Nanopore reads, Illlumina reads, bacterial organism (_Vibrio parahaemolyticus_) reference genome
+**Data:** Nanopore reads, Illlumina reads
 
 **Tools:** `Canu`, `Pilon`, `Unicycler`, `Quast`, `Busco`, `BWA`, `Samtools`,`FastQC`, `Trimmomatic`,`Cutadapt`,`Nanoplot`,`Filtlong`,`Porechop`
 
@@ -155,6 +153,23 @@ filtlong --min_length 1000 --keep_percent 90 --mean_q_weight 9 nanopore_adapter_
 
 :bangbang: As we did with the Illumina reads, from now on when we say nanopore reads we will be refearing to `nanopore_filtered.fastq`
 
+**assign taxonomy of the pathogen**
+Now that we have our reads clean, it is always interesting to know what are we looking for. Doing an assembly without knowing what are we facing could be terrible. For example,
+imagine that you have assembled a genome with 6 close chormosomes, first of all, congratulations because that is not easy, but then you assign somehow the taxonomy of that organism
+and WOW is a Ficus! 🍃 👏👏, and then you realize that ficus is 2n=26 and something has gone wrong.
+There is pleanty of ways to assign taxonomy when doing an assembly, for example one of the most used programs to assign taxonomy to illumina reads is `Kraken2`, anoterone used with Nanopore reads
+could be `Emu`. But this programs require a powerfull machines, and let's be honest your gaming laptop MSI i9 with 12 Cores and 32 GB of Ram is not as powerful as the clusters that are typically used for this
+jobs (we are talking about >40 Cores >100GB ram).
+
+To make things easy and rapid, we are going to de a trick, taking adventage of the length of the nanopore reads, we will select the first read of the `fastq` file, or the second, it doesn't matter whilst is long enough, and all should after the QC that we have done. and we are going to blast it!
+
+```bash
+head qc/nanopore_trimmed/nanopore_filtered.fastq #you can also open the file and select the first read
+```
+now that you have copied the first read, go to [Blastn](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome) and submit a job using the blastn option.
+Wow is a _Vibrio parahaemolyticus_, thanks god is not that ficus again!
+Go to the NCBI and download in fasta format the [GCA_009649015.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_009649015.1/) genome in a unique `Fasta` file.
+Once you have download it, change the name of the fasta to `VP_reference_genome.fasta` and save it in the data directory.
 
 ## Section 2: Nanopore draft assembly
 
