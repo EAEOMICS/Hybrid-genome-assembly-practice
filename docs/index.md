@@ -4,8 +4,10 @@ For full documentation visit [MSc Bioinformatics moodle](http://bioinformatics-e
 
 ## Context
 
-Several patients have arrived to the hospital presenting a clear illness pattern.You have tried to determine which pathogen is, but all your tests have failed, the time is running and you need a solution.
-You have shared this problems with your boss and, rapidly, you both arrive into a conclusion, sequence the pathogen. With that you will absolutly determine which pathogen has been causing all this troubles, and furthermore, you will know if it has any special characteristic such as antimicrobial resistance genes, pathogenic islands, etc.
+Several patients have arrived at the hospital presenting a clear illness pattern. You have tried to determine which pathogen is, but all your tests have failed, number of cases don't stop and more and more patients arrive at the hospital, the time is running and you need a solution.
+
+You have shared this problems with your boss and, rapidly, you both arrive into a conclusion, sequencing the pathogen. With that you will absolutly determine which pathogen has been causing all this troubles, and furthermore, you will know if it has any special characteristic such as antimicrobial resistance genes, pathogenic islands, etc.  to inform the clinicians and act accordingly the nature and virulence of the pathogen.
+
 To sequence the pathogen you have at your disposal the MinION that Oxoford Nanopore send you some months ago to test it and the hospital's Illumina MiSeq. In this case you would for sure select the Illumina sequencer because is what everybody does and there's plenty of pipelines out there online. But your boss has read that some crazy scientist have started to do something called... Hybrid assembly. 
 So she tells you to try it...of course.
 
@@ -157,8 +159,9 @@ filtlong --min_length 1000 --keep_percent 90 --mean_q_weight 9 nanopore_adapter_
 **assign taxonomy of the pathogen**
 
 Now that we have our reads clean, it is always interesting to know what are we looking for. Doing an assembly without knowing what are we facing could be terrible. For example,
-imagine that you have assembled a genome with 6 close chormosomes, first of all, congratulations because that is not easy, but then you assign somehow the taxonomy of that organism
-and WOW is a Ficus! 🍃 👏👏, and then you realize that ficus is 2n=26 and something has gone wrong.
+imagine that you have assembled a genome with 6 closed chormosomes, first of all, congratulations because that is not easy, but then you assign somehow the taxonomy of that organism
+and... WOW is a Ficus! 🍃 👏👏, but you rapidly realize that Ficus is 2n=26 and something has gone wrong.
+
 There is pleanty of ways to assign taxonomy when doing an assembly, for example one of the most used programs to assign taxonomy to illumina reads is `Kraken2`, anoterone used with Nanopore reads
 could be `Emu`. But this programs require a powerfull machines, and let's be honest your gaming laptop MSI i9 with 12 Cores and 32 GB of Ram is not as powerful as the clusters that are typically used for this
 jobs (we are talking about >40 Cores >100GB ram).
@@ -170,7 +173,7 @@ head qc/nanopore_trimmed/nanopore_filtered.fastq #you can also open the file and
 ```
 now that you have copied the first read, go to [Blastn](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome) and submit a job using the blastn option.
 Wow is a _Vibrio parahaemolyticus_, thanks god is not that ficus again!
-Go to the NCBI and download in fasta format the [GCA_009649015.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_009649015.1/) genome in a unique `Fasta` file.
+Go to the NCBI and download in `Fasta` format the [GCA_009649015.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_009649015.1/) genome in a unique file.
 Once you have download it, change the name of the fasta to `VP_reference_genome.fasta` and save it in the data directory.
 
 ## Section 2: Nanopore draft assembly
