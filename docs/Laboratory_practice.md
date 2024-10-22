@@ -22,11 +22,11 @@ Recommended: Use 2 µl of sample and fill it up with 198 µl of working solution
 
 1. To prepare the flow cell priming mix add 1,170 µl of Flow Cell Flush (FCF) and 30 µl of Flow Cell Tether (FCT) into a 1.5 ml Eppendorf DNA LoBind tube. Mix by pipetting.
 2. Slide the flow cell priming port cover clockwise to open the priming port.
-<img src="assets/Image1.png" width="600">
+![Screenshot](assets/Image1.png)
 3. After opening the priming port, check for a small air bubble under the cover. Draw back a small volume to remove any bubles.
-<img src="assets/Image2.gif" width="600">
+![Screenshot](assets/Image2.gif)
 3. Load 800 µl of the priming mix into the flow cell via the priming port, avoiding the introduction of air bubbles. Wait for five minutes.
-<img src="assets/Image3.gif" width="600">
+![Screenshot](assets/Image3.gif)
 4. Thoroughly mix the contents of the Library Beads (LIB) by pipetting.
 5. In a new 1.5 ml Eppendorf DNA LoBind tube, prepare the library for loading as follows:
 - Sequencing Buffer (SB) 37.5 µl
@@ -34,10 +34,10 @@ Recommended: Use 2 µl of sample and fill it up with 198 µl of working solution
 - DNA library 12 µl
 6. To complete the flow cell priming, gently lift the SpotON sample port cover to make the SpotON sample port accessible.
 7. Load 200 µl of the priming mix into the flow cell priming port (not the SpotON sample port), avoiding the introduction of air bubbles.
-<img src="assets/Image4.png" width="600">
-<img src="assets/Image5.gif" width="600">
+![Screenshot](assets/Image4.png)
+![Screenshot](assets/Image5.gif)
 8. Mix the prepared library gently by pipetting up and down just prior to loading.
 9. Add 75 μl of the prepared library to the flow cell via the SpotON sample port in a dropwise fashion. Ensure each drop flows into the port before adding the next.
-<img src="assets/Image6.gif" width="600">
+![Screenshot](assets/Image6.gif)
 10. Close the SpotOn port and the priming port.
 
