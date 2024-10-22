@@ -1,4 +1,5 @@
 site_name: Hybrid genome assembly practice
+site_url: https://eaeomics.github.io/Hybrid-genome-assembly-practice/Laboratory_practice/
 theme:
   name: material
   logo: assets/logo.png
