@@ -1,6 +1,6 @@
 # Rapid Sequencing Kit
 
-##Context
+## Context
 
 Several patients have arrived at the hospital presenting a clear illness pattern. You have tried to determine which pathogen is, but all your tests have failed, number of cases don't stop and more and more patients arrive at the hospital, the time is running and you need a solution.
 
@@ -68,6 +68,16 @@ To do so, add 199*(n+1) µl of Buffer and 1*(n+1) µl of Reagent in a Falcon tub
 Recommended: Use 2 µl of sample and fill it up with 198 µl of working solution.
 4. Vigorously vortex for 3–5 seconds. Be careful not to create bubbles.
 5. Allow all tubes to incubate at room temperature for 2 minutes, then proceed to read standards and samples in a Qubit fluorometer.
+
+<details>
+<summary>Question 6(click to reveal)</summary>
+Taking into considereation that we have to sequence in two different sequencers with different input specifications, do you think that we have enough DNA to satisfy the minimum input of both sequencers?
+</details>
+
+<details>
+<summary>Question 7(click to reveal)</summary>
+What would you do if you have enough DNA but the amount of microliters that you need to add is more than the maximum expected
+</details>
 
 ## Section2: Library preparation
 
