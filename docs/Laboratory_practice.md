@@ -27,7 +27,7 @@ Our boss has told us that he wants an Illumina sequencing with a coverage of X60
 Given that the studied genome is 5.1 Mb, if you want to sequence your sample using an Illumina MiSeq System with a coverage of 60X, how many reads would you obtain?
 </details>
 
-Now go to the [Illumina page]([http://bioinformatics-elearning.uab.cat:8080/moodle/](https://support.illumina.com/downloads/sequencing_coverage_calculator.html) and make sure that your results are correct.
+Now go to the [Illumina page](https://support.illumina.com/downloads/sequencing_coverage_calculator.html) and make sure that your results are correct.
 
 <details>
 <summary>Question 2(click to reveal)</summary>
