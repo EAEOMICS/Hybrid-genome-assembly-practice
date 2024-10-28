@@ -76,7 +76,7 @@ Taking into considereation that we have to sequence in two different sequencers 
 
 <details>
 <summary>Question 7(click to reveal)</summary>
-What would you do if you have enough DNA but the amount of microliters that you need to add is more than the maximum expected
+What would you do if you have enough DNA but the amount of microliters that you need to add is more than the maximum expected?
 </details>
 
 ## Section2: Library preparation
