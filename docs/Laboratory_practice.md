@@ -1,5 +1,17 @@
 # Rapid Sequencing Kit
 
+##Context
+
+Several patients have arrived at the hospital presenting a clear illness pattern. You have tried to determine which pathogen is, but all your tests have failed, number of cases don't stop and more and more patients arrive at the hospital, the time is running and you need a solution.
+
+You have shared this problems with your boss and, rapidly, you both arrive into a conclusion, sequencing the pathogen. But She wants you to sequence the pathogen using both sequencing techonologies, Illumina and Nanopore. Now is time for you to realise how to do this task, as there is no other bioinformatitian in the hospital. Do we have enough DNA? Which Illumina kit are you going to use if we have an Illumina MiSeq? Can I sequence more than 1 samples in the same Nanopore Flowcell?
+
+Maybe this job is not as good payed as you thought :dizzy_face:
+
+![Screenshot](assets/sequencing _practice.jpeg)
+
+## A bit about Nanopore
+
 Nanopore sequencing is a third-generation sequencing technology that allows us to determine the nucleotide sequences in a sample.
 
 The sample is placed in a flow cell, where it interacts with nanopores located in a sensor array, and an electric current is applied. As each DNA or RNA fragment passes through a nanopore, it causes changes in the ion flow, which alter the current. These changes are linked to the passage of specific nucleotide bases through the nanopores, in a process called basecalling, which identifies the sequence in real time. A key advantage of nanopore sequencing is that, unlike other technologies, it can handle very long fragments of DNA or RNA without size limitations.
