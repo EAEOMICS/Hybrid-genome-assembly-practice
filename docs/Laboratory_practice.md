@@ -34,6 +34,24 @@ Now go to the [Illumina page](https://support.illumina.com/downloads/sequencing_
 Which MiSeq Illumina kit should we use if we only have 1 sample? Which one would you use if there were more samples?
 </details>
 
+In the case of Nanopore we have two different sequencers, the Cancer team is working right now with the PromenthION and we could use it, but in our laboratory we have the MinION and maybe there's no need to bother them. Take into consideration that the Flow Cells for these sequencers are different: the MinION/GridION Flow Cell outputs a maximum of 50 Gb and the PromethION Flow Cell a maximum of 290 Gb.
+
+<details>
+<summary>Question 3(click to reveal)</summary>
+Knowing this, which sequencer would you use to sequence your sample?
+<details>
+
+<details>
+<summary>Question 4(click to reveal)</summary>
+If we use the whole Flow Cell, which cover should we get? 
+<details>
+
+<details>
+<summary>Question 5(click to reveal)</summary>
+With the research that we have already done we know that we only need a coverage of X20 with the nanopore reads. Obviously your output is going to be much more bigger, How would you handle it?
+<details>
+
+
 ## Section 1: Qubit dsDNA HS Assay Kit
 
 The Qubit fluorometer is a device capable of quantifying the amount of DNA, RNA, or proteins present in a sample.
