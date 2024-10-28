@@ -4,7 +4,7 @@
 
 Several patients have arrived at the hospital presenting a clear illness pattern. You have tried to determine which pathogen is, but all your tests have failed, number of cases don't stop and more and more patients arrive at the hospital, the time is running and you need a solution.
 
-You have shared this problems with your boss and, rapidly, you both arrive into a conclusion, sequencing the pathogen. But She wants you to sequence the pathogen using both sequencing techonologies, Illumina and Nanopore. Now is time for you to realise how to do this task, as there is no other bioinformatitian in the hospital. Do we have enough DNA? Which Illumina kit are you going to use if we have an Illumina MiSeq? Can I sequence more than 1 samples in the same Nanopore Flowcell?
+You have shared this problems with your boss and, rapidly, you both arrive into a conclusion, sequencing the pathogen. But She wants you to sequence the pathogen using both sequencing techonologies, Illumina and Nanopore. Now is time for you to realise how to do this task, as there is no other bioinformatitian in the hospital. The first thing that we are going to do is consider that our genome is 5.1Mb, but the next questions are tougher, Do we have enough DNA? Which Illumina kit are you going to use if we have an Illumina MiSeq? Can I sequence more than 1 samples in the same Nanopore Flowcell?
 
 Maybe this job is not as good payed as you thought :dizzy_face:
 
@@ -16,6 +16,23 @@ Nanopore sequencing is a third-generation sequencing technology that allows us t
 
 The sample is placed in a flow cell, where it interacts with nanopores located in a sensor array, and an electric current is applied. As each DNA or RNA fragment passes through a nanopore, it causes changes in the ion flow, which alter the current. These changes are linked to the passage of specific nucleotide bases through the nanopores, in a process called basecalling, which identifies the sequence in real time. A key advantage of nanopore sequencing is that, unlike other technologies, it can handle very long fragments of DNA or RNA without size limitations.
 
+Given that the studied genome is 5.1 Mb, if you want to sequence your sample using an Illumina MiSeq System with a coverage of 60X, how many reads would you obtain?
+
+## Output Discussion
+
+Our boss has told us that he wants an Illumina sequencing with a coverage of X60 and paired-end reads. We have a Miseq in our lab, but as you know there are plenty of Illumina kits to sequence in that machine, so maybe you should first think about the output that you know you are going to get with the specifications that your boss told you. Thanks god your old teacher gave you some lessons about how to calculate this during you master.
+
+<details>
+<summary>Question 1(click to reveal)</summary>
+Given that the studied genome is 5.1 Mb, if you want to sequence your sample using an Illumina MiSeq System with a coverage of 60X, how many reads would you obtain?
+</details>
+
+Now go to the [Illumina page]([http://bioinformatics-elearning.uab.cat:8080/moodle/](https://support.illumina.com/downloads/sequencing_coverage_calculator.html) and make sure that your results are correct.
+
+<details>
+<summary>Question 2(click to reveal)</summary>
+Which MiSeq Illumina kit should we use if we only have 1 sample? Which one would you use if there were more samples?
+</details>
 
 ## Section 1: Qubit dsDNA HS Assay Kit
 
