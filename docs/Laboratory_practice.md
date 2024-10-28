@@ -39,17 +39,17 @@ In the case of Nanopore we have two different sequencers, the Cancer team is wor
 <details>
 <summary>Question 3(click to reveal)</summary>
 Knowing this, which sequencer would you use to sequence your sample?
-<details>
+</details>
 
 <details>
 <summary>Question 4(click to reveal)</summary>
 If we use the whole Flow Cell, which cover should we get? 
-<details>
+</details>
 
 <details>
 <summary>Question 5(click to reveal)</summary>
 With the research that we have already done we know that we only need a coverage of X20 with the nanopore reads. Obviously your output is going to be much more bigger, How would you handle it?
-<details>
+</details>
 
 
 ## Section 1: Qubit dsDNA HS Assay Kit
