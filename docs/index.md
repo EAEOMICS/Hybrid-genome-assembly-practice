@@ -4,12 +4,12 @@ For full documentation visit [MSc Bioinformatics moodle](http://bioinformatics-e
 
 ## Context
 
-Several patients have arrived at the hospital presenting a clear illness pattern. You have tried to determine which pathogen is, but all your tests have failed, number of cases don't stop and more and more patients arrive at the hospital, the time is running and you need a solution.
+Several patients have arrived at the hospital showing a common clinical presentation suggesting an infectious disease. Samples were collected and submitted to the laboratory and subjected to analyses for a complete panel of pathogens, which negative results for all the test. Given the urgency of the situation and the need of a clear diagnostic to implement a treatment to content the progress of infections, the laboratory isolated one strains and extracted the DNA to try to identify the pathogen through sequencing...
 
-You have shared this problems with your boss and, rapidly, you both arrive into a conclusion, sequencing the pathogen. With that you will absolutly determine which pathogen has been causing all this troubles, and furthermore, you will know if it has any special characteristic such as antimicrobial resistance genes, pathogenic islands, etc.  to inform the clinicians and act accordingly the nature and virulence of the pathogen.
+The lab contacts the head of the genomic department and request the sequencing of the strain to try to identify the species through the taxonomic assignation of the sequences. In addition to the species, information about virulence traits and antibiotic resistance have been also requested to be inferred from the “in silico” analyses of the strain genome.
 
-To sequence the pathogen you have at your disposal the MinION that Oxoford Nanopore send you some months ago to test it and the hospital's Illumina MiSeq. In this case you would for sure select the Illumina sequencer because is what everybody does and there's plenty of pipelines out there online. But your boss has read that some crazy scientist have started to do something called... Hybrid assembly. 
-So she tells you to try it...of course.
+To sequence the pathogen, a MinION device from Oxford Nanopore is available in your laboratory, although the team decided to obtain a second sequence using Illumina to contract with the Nanopore sequence and try to improve the quality of the genome. As your lab has not a Illumina sequencer, the DNA extraction is shipped to an external facility to be sequenced using Illumina requesting a “good quality” in terms of coverage (depth).
+Now your boss has read that some crazy scientist have started to do something called... hybrid assembly. So she ask you to try this approach ...of course.
 
 <img src="assets/Designer.png" width="500">
 
@@ -42,7 +42,7 @@ Today we will use 4 pieces of data - **2 short read sets, 1 long read set, and a
 
 ### Getting the data
 
-To get the data we will import our reads directly from the **NCBI SRA database** (Sequence Read Archive) which is the largest publicly available repository of high throughput sequencing data
+For the illumina reads, the external organization has already uploaded the reads to the **NCBI SRA database** (Sequence Read Archive) which is the largest publicly available repository of high throughput sequencing data.
 
 To download the data we will use the `fasterq-dump` tool from the SRA-toolkit which should be already installed in your conda environment.
 We know that the accession ID of our samples is **SRR10345480** and **SRR9042863**. 
@@ -93,7 +93,7 @@ What do you think about them? Do you think they have enough quality? Let's discu
 
 **Clean Illumina reads**
 
-It seams that our samples have some unwanted short reads and the quality of some bases is not as good as it could be.
+It seems that our samples have some unwanted short reads and the quality of some bases is not as good as it could be.
 There are plenty of programs such as `trimmomatic` or `cutadapt` that can be used to filter our Illumina reads.First we will get rid of the Illumina adapters, in this case we use Nextera adapters, using `Cutadapt`.
 Then we will filter to the get the best possible reads by quality and length using `Trimmomatic` 
 ```bash
@@ -140,9 +140,9 @@ Now as we did before with the Illumina reads, let's clean the Nanopore reads.
 
 **Clean Nanopore reads**
 
-For cleaning our `Nanopore Reads` we will be using `Porechop`and `Filtlong` which are both of the most standarized softwares used for that. `Porechop`is the equivalent of
+For cleaning our `Nanopore Reads` we will be using `Porechop`and `Filtlong` which are both of the most standardized software used for that. `Porechop`is the equivalent of
 `Cutadapt` in Illumina and `Filtlong` is the equivalent of `Trimmomatic`.
-Why do we need diferent programs to do that? Well, different technologies need diferent approaches, although some of the most popular softwares right now can support all `PacBio`, `Illumina`and `Nanopore`reads.
+Why do we need different programs to do that? Well, different technologies need different approaches, although some of the most popular software right now can support all `PacBio`, `Illumina`and `Nanopore`reads.
 
 ```bash
 #go to the main directory hybrid_assembly
@@ -154,19 +154,19 @@ porechop -i ../../data/SRR10*.fastq -o ./nanopore_adapter_clean.fastq
 filtlong --min_length 1000 --keep_percent 90 --mean_q_weight 9 nanopore_adapter_clean.fastq > nanopore_filtered.fastq
 ```
 
-:bangbang: As we did with the Illumina reads, from now on when we say nanopore reads we will be refearing to `nanopore_filtered.fastq`
+:bangbang: As we did with the Illumina reads, from now on when we say nanopore reads we will be referring to `nanopore_filtered.fastq`
 
 **assign taxonomy of the pathogen**
 
 Now that we have our reads clean, it is always interesting to know what are we looking for. Doing an assembly without knowing what are we facing could be terrible. For example,
-imagine that you have assembled a genome with 6 closed chormosomes, first of all, congratulations because that is not easy, but then you assign somehow the taxonomy of that organism
+imagine that you have assembled a genome with 6 closed chromosomes, first of all, congratulations because that is not easy, but then you assign somehow the taxonomy of that organism
 and... WOW is a Ficus! 🍃 👏👏, but you rapidly realize that Ficus is 2n=26 and something has gone wrong.
 
-There is pleanty of ways to assign taxonomy when doing an assembly, for example one of the most used programs to assign taxonomy to illumina reads is `Kraken2`, anotherone used with Nanopore reads
-could be `Emu`. But this programs require powerfull machines, and let's be honest, your gaming laptop MSI i9 with 12 Cores and 32 GB of Ram is not as powerful as the clusters that are typically used for this
+There is plenty of ways to assign taxonomy when doing an assembly, for example one of the most used programs to assign taxonomy to illumina reads is `Kraken2`, another one used with Nanopore reads
+could be `Emu`. But these programs require powerful machines, and let's be honest, your gaming laptop MSI i9 with 12 Cores and 32 GB of Ram is not as powerful as the clusters that are typically used for this
 jobs (we are talking about >40 Cores >100GB ram).
 
-To make things easy and rapid, we are going to do a trick. Taking adventage of the length of the nanopore reads, we will select the first read of the `fastq` file, or the second, it doesn't matter whilst is long enough, and they all should be after the QC that we have done, then we are going to blast it!
+To make things easy and rapid, we are going to do a trick. Taking advantage of the length of the nanopore reads, we will select the first read of the `fastq` file, or the second, it doesn't matter whilst is long enough, and they all should be after the QC that we have done, then we are going to blast it!
 
 ```bash
 head qc/nanopore_trimmed/nanopore_filtered.fastq #you can also open the file and select the first read
@@ -213,7 +213,7 @@ After the program has run, look at the ‘short summary’ output. It may look s
 <img src="assets/Busco_reference.png">
 
 It seems that BUSCO could find almost all expected genes in the reference genome assembly.
-By looking at the results, we see that we have 1443 / 1444 Complete BUSCOs, one being complete and duplicates, and anotherone missing.
+By looking at the results, we see that we have 1443 / 1444 Complete BUSCOs, one being complete and duplicates, and another one missing.
 
 This will form the baseline for the BUSCO QC results expected of a high-quality genome assembly.
 
@@ -332,7 +332,7 @@ Once `Pilon` has ended we should find a unique **Fasta** file in the `pilon` dir
 **Assembly QC**
 
 Now that we have run Pilon, thanks to the help of the illumina reads we should get a much better assembly than before.
-But we cannot call ourself scientist only with assumptions we need facts. Therefore, let's run Busco and Quast...yes, again :sleepy:
+But we cannot call ourselves scientist only with assumptions we need facts. Therefore, let's run Busco and Quast...yes, again :sleepy:
 
 ```bash
 #go to the main directory hybrid_assembly
@@ -387,7 +387,7 @@ busco -i ../../assemblies/unicycler/assembly.fasta -l vibrionales -o busco --aug
 quast ../../assemblies/unicycler/assembly.fasta -r ../../data/VP_reference_genome.fasta -o quast
 ```
 
-This are the results that we have obtained from Unicycler:
+these are the results that we have obtained from Unicycler:
 
 <img src="assets/Busco_unicycler.png">
 <img src="assets/quast_unicycler.png">
@@ -406,7 +406,7 @@ What do you think about the hybrid assembly? is it good enough for you?
 
 As you have read in the section 4 title, now we are going to do a Unicycler run based on our Canu run, and yes! this is possible.
 For that we are going to use the `Unicycler` option `--existing_long_read_assembly`. Remember when we mapped the illumina reads to the Canu draft assembly so`Pilon` could improve
-our the assembly? Well let's say this is something similar. This time Unicycler insted of building everything without a base, it will have de Canu_improved_assembly as baseline,
+our the assembly? Well let's say this is something similar. This time Unicycler instead of building everything without a base, it will have de Canu_improved_assembly as baseline,
 and you will see that this time we will have a better result.
 
 ```bash
