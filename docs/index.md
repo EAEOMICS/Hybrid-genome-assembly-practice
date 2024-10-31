@@ -186,8 +186,6 @@ When running assembly tools, we want to check the quality of assemblies we produ
 
 To get a baseline for what is considered a "high-quality" assembly, we will first run a common assembly QC tool - `Busco` - on a published genome similar to the organism we are working with today.
 
-We also want to do the same with the another assembly but this time, instead of a hybrid assembly, we will look at an Illumina-only assembly made with `SPAdes` [GCA_001559895.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_001559895.1/)
-
 **Busco**
 
 `Busco` analysis uses the presence, absence, or fragmentation of key genes in an assembly to determine its quality.
@@ -241,7 +239,7 @@ We need to compare this assembly with our reference genome. For that we are goin
 mkdir -p assembly_qc/canu_nanopore
 cd assembly_qc/canu_nanopore
 
-busco -i ../../assemblies/canu/conu.contigs.fasta -l vibrionales -o busco --augustus --mode genome --cpu 4
+busco -i ../../assemblies/canu/canu.contigs.fasta -l vibrionales -o busco --augustus --mode genome --cpu 4
 
 ```
 
@@ -263,7 +261,7 @@ You know what is coming next, Yes! another directory :partying_face:
 ```bash
 #in the same assembly_qc/canu_nanopore directory as before
 
-quast ../../assemblies/canu/conu.contigs.fasta -r ../../data/VP_reference_genome.fasta -o quast
+quast ../../assemblies/canu/canu.contigs.fasta -r ../../data/VP_reference_genome.fasta -o quast
 ```
 The output of `Quast` should be a directory with a set of files, we are interested in the `report.html` file
 Now you should be looking at something like this:
