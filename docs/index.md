@@ -186,7 +186,7 @@ When running assembly tools, we want to check the quality of assemblies we produ
 
 To get a baseline for what is considered a "high-quality" assembly, we will first run a common assembly QC tool - `Busco` - on a published genome similar to the organism we are working with today.
 
-In the moodle you should see a `VP_reference_genome.fasta` item. This is the published genome we will compare against.
+We also want to do the same with the another assembly but this time, instead of a hybrid assembly, we will look at an Illumina-only assembly made with `SPAdes` [GCA_001559895.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_001559895.1/)
 
 **Busco**
 
