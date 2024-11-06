@@ -71,10 +71,12 @@ Depending on these summaries, we may choose to perform a QC step to remove any p
 
 As said before, we will use `FastQC` to see the quality of our **Illumina** reads. Once again, remember **Organization is key**, therefore we are going to create a new directory where we are going to save all our Quality Control outputs
 ```bash
+#go to the main directory hybrid_assembly
+
 mkdir -p qc/illumina_raw
 cd qc/illumina_raw
 
-fastqc data/SRR*_1.fastq data/SRR*_2.fastq -o -o ./
+fastqc data/SRR*_1.fastq data/SRR*_2.fastq -o ./
 ```
 
 FastQC produces two outputs - 'RawData', and 'html'. Typically, the html is for human viewing, and the RawData can be given to other programs, such as MultiQC.
@@ -108,6 +110,7 @@ We have generated two **new fastqs** called `illumina_trimmed_1.fastq` and `illu
 Now is time to see how this new fastqs differ from the others.
 
 ```bash
+#go to the main directory hybrid_assembly
 mkdir -p qc/illumina_trimmed
 
 fastqc qc/trimmomatic/illumina_trimmed_1.fastq qc/trimmomatic/illumina_trimmed_2.fastq -o qc/illumina_trimmed
@@ -202,6 +205,7 @@ Let's create a new directory called `assembly_qc`. We want to create this direct
 >hybrid_assembly[data(fastqs), qc(illumina_raw, nanopore_raw, illumina_trimed, fastp), assembly_qc]
 
 ```bash
+#go to the main directory hybrid_assembly
 mkdir -p assembly_qc
 cd assembly_qc
 busco -i ../../data/VP_reference_genome.fasta -l vibrionales -o busco_reference --augustus --mode genome 
@@ -227,6 +231,7 @@ Once again we need to create an specific directory for that, let's move again to
 we will create a directory called `assemblies` where we will compute all the assemblies in this practice
 
 ```bash
+#go to the main directory hybrid_assembly
 mkdir -p assemblies/canu
 canu -p canu -d assemblies/canu -nanopore qc/nanopore_trimmed/nanopore_filtered.fastq --genomeSize=5.1m
 ```
