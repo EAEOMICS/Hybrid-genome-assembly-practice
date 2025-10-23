@@ -16,8 +16,6 @@ Nanopore sequencing is a third-generation sequencing technology that allows us t
 
 The sample is placed in a flow cell, where it interacts with nanopores located in a sensor array, and an electric current is applied. As each DNA or RNA fragment passes through a nanopore, it causes changes in the ion flow, which alter the current. These changes are linked to the passage of specific nucleotide bases through the nanopores, in a process called basecalling, which identifies the sequence in real time. A key advantage of nanopore sequencing is that, unlike other technologies, it can handle very long fragments of DNA or RNA without size limitations.
 
-Given that the studied genome is 5.1 Mb, if you want to sequence your sample using an Illumina MiSeq System with a coverage of 60X, how many reads would you obtain?
-
 ## Output Discussion
 
 Our boss has told us that he wants an Illumina sequencing with a coverage of X60 and paired-end reads. We have a Miseq in our lab, but as you know there are plenty of Illumina kits to sequence in that machine, so maybe you should first think about the output that you know you are going to get with the specifications that your boss told you. Thanks god your old teacher gave you some lessons about how to calculate this during you master.
@@ -48,7 +46,7 @@ If we use the whole Flow Cell, which cover should we get?
 
 <details>
 <summary>Question 5(click to reveal)</summary>
-With the research that we have already done we know that we only need a coverage of X20 with the nanopore reads. Obviously your output is going to be much more bigger, How would you handle it?
+With the research that we have already done we know that we only need a coverage of X20 with the nanopore reads. Obviously your output is going to be much bigger, How would you handle it?
 </details>
 
 
@@ -116,4 +114,5 @@ At the same time, the flow cell must also be prepared using the flow cell primin
 9. Add 75 μl of the prepared library to the flow cell via the SpotON sample port in a dropwise fashion. Ensure each drop flows into the port before adding the next.
 ![Screenshot](assets/Image6.gif)
 10. Close the SpotOn port and the priming port.
+
 
